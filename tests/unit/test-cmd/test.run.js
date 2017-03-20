@@ -168,6 +168,17 @@ describe('run', () => {
     });
   });
 
+  it('passes --marionette when --marionette is specified', () => {
+    const cmd = prepareRun();
+    const {firefoxApp} = cmd.options;
+
+    return cmd.run({marionette: true}).then(() => {
+      assert.ok(firefoxApp.run.called);
+      assert.equal(firefoxApp.run.firstCall.args[1].binaryArgs,
+                   '--marionette');
+    });
+  });
+
   it('passes a custom Firefox profile when specified', () => {
     const firefoxProfile = '/pretend/path/to/firefox/profile';
     const cmd = prepareRun();

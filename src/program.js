@@ -339,7 +339,7 @@ Example: $0 --help run.
         type: 'string',
       },
       'firefox-profile': {
-        alias: 'p',
+        alias: ['p', 'profile'],
         describe: 'Run Firefox using a copy of this profile. The profile ' +
                   'can be specified as a directory or a name, such as one ' +
                   'you would see in the Profile Manager. If not specified, ' +
@@ -350,6 +350,11 @@ Example: $0 --help run.
       'keep-profile-changes': {
         describe: 'Run Firefox directly in custom profile. Any changes to ' +
                   'the profile will be saved.',
+        demand: false,
+        type: 'boolean',
+      },
+      'marionette': {
+        describe: 'Enable marionette after installation',
         demand: false,
         type: 'boolean',
       },

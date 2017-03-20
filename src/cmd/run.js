@@ -175,6 +175,7 @@ export type CmdRunParams = {|
   firefoxProfile: string,
   keepProfileChanges: boolean,
   preInstall: boolean,
+  marionette: boolean,
   noReload: boolean,
   browserConsole: boolean,
   customPrefs?: FirefoxPreferences,
@@ -191,8 +192,9 @@ export type CmdRunOptions = {|
 export default async function run(
   {
     sourceDir, artifactsDir, firefox, firefoxProfile,
-    keepProfileChanges = false, preInstall = false, noReload = false,
-    browserConsole = false, customPrefs, startUrl, ignoreFiles,
+    keepProfileChanges = false, preInstall = false, marionette = false,
+    noReload = false, browserConsole = false, customPrefs, startUrl,
+    ignoreFiles,
   }: CmdRunParams,
   {
     firefoxApp = defaultFirefoxApp,
@@ -223,6 +225,7 @@ export default async function run(
     keepProfileChanges,
     browserConsole,
     manifestData,
+    marionette,
     profilePath: firefoxProfile,
     customPrefs,
     startUrl,
@@ -299,6 +302,7 @@ export type ExtensionRunnerParams = {|
   firefoxApp: typeof defaultFirefoxApp,
   firefox: string,
   browserConsole: boolean,
+  marionette: boolean,
   customPrefs?: FirefoxPreferences,
   startUrl?: string | Array<string>,
 |};
@@ -311,14 +315,15 @@ export class ExtensionRunner {
   firefoxApp: typeof defaultFirefoxApp;
   firefox: string;
   browserConsole: boolean;
+  marionette: boolean;
   customPrefs: FirefoxPreferences;
   startUrl: ?string | ?Array<string>;
 
   constructor(
     {
       firefoxApp, sourceDir, manifestData,
-      profilePath, keepProfileChanges, firefox, browserConsole, startUrl,
-      customPrefs = {},
+      profilePath, keepProfileChanges, firefox, browserConsole, marionette,
+      startUrl, customPrefs = {},
     }: ExtensionRunnerParams
   ) {
     this.sourceDir = sourceDir;
@@ -328,6 +333,7 @@ export class ExtensionRunner {
     this.firefoxApp = firefoxApp;
     this.firefox = firefox;
     this.browserConsole = browserConsole;
+    this.marionette = marionette;
     this.customPrefs = customPrefs;
     this.startUrl = startUrl;
   }
@@ -373,6 +379,9 @@ export class ExtensionRunner {
     const {firefoxApp, firefox, startUrl} = this;
     if (this.browserConsole) {
       binaryArgs.push('-jsconsole');
+    }
+    if (this.marionette) {
+      binaryArgs.push('--marionette');
     }
     if (startUrl) {
       const urls = Array.isArray(startUrl) ? startUrl : [startUrl];
